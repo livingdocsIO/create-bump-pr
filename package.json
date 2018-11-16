@@ -21,7 +21,7 @@
     "url": "git+https://github.com/DaRaFF/create-bump-pr.git"
   },
   "devDependencies": {
-    "semantic-release": "^15.10.6",
+    "semantic-release": "^15.12.0",
     "travis-deploy-once": "^5.0.9"
   },
   "publishConfig": {
