@@ -42,6 +42,7 @@ module.exports = async ({owner, repo, token}) => {
   const newLineReadmeEncoded = Buffer.from(newLineReadme).toString('base64')
 
   // create new release-branch
+  console.log(`try to create branch "bump-${bumpTo}"`)
   await o.createBranch({
     owner,
     repo,
