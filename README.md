@@ -13,5 +13,5 @@ A simple CLI command to create a semantic-release minor bump pull request.
 ### via CLI
 
 ```bash
-npx @daraff/create-bump-pr --token=<your-token> --owner=<gh-owner> --repo=<gh-repo>
+npx @daraff/create-bump-pr --token=<your-gh-token> --owner=<gh-owner> --repo=<gh-repo>
 ```
