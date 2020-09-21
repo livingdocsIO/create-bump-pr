@@ -1,12 +1,17 @@
 const _ = require('lodash')
 const semver = require('semver')
-const Octokit = require('./octokit')
+const gitGetTags = require('./lib/git/get_tags')
+const gitGetReadme = require('./lib/git/get_readme')
+const gitCreateBranch = require('./lib/git/create_branch')
+const updateContent = require('./lib/git/update_content')
+const createPullRequest = require('./lib/git/create_pull_request')
+const createApprovalForPullRequest = require('./lib/git/create_approval_for_pull_request')
 
 // @return {'tag': '1.0.1', 'sha': '1234'}
-const getHighestTag = async ({repo, owner, o}) => {
-  const tagsRaw = await o.getTagsByPage({repo, owner, page: 1, perPage: 5})
+const getHighestTag = async ({repo, owner, token}) => {
+  const tagsRaw = await gitGetTags({owner, repo, token})
   return _
-    .chain(tagsRaw.data)
+    .chain(tagsRaw)
     .map((tag) => {
       return {
         'tag': tag.name,
@@ -22,56 +27,68 @@ const getHighestTag = async ({repo, owner, o}) => {
     .value()
 }
 
-const getNextMinorTag = ({tag}) => {
-  return semver.inc(tag, 'minor')
-}
-
 // main application
-module.exports = async ({owner, repo, token}) => {
-  const o = new Octokit(token)
+module.exports = async ({owner, repo, ghToken, ghApprovalToken}) => {
+  const token = ghToken
 
-  const baseTagCommit = await getHighestTag({repo, owner, o})
-  const bumpTo = getNextMinorTag({tag: baseTagCommit.tag})
+  if (token === ghApprovalToken) throw new Error('gh-approval-token token must be different to the gh-token')
+  const baseTagCommit = await getHighestTag({repo, owner, token})
 
   // get README.md
-  const readmeBase64 = await o.getReadme({owner, repo})
+  const readmeBase64Obj = await gitGetReadme({owner, repo, token})
 
   // add an empty line to the readme to have a code diff for the upcoming pull request
-  const readme = Buffer.from(readmeBase64.data.content, 'base64').toString('ascii')
+  const readme = Buffer.from(readmeBase64Obj.content, 'base64').toString('ascii')
   const newLineReadme = `\n ${readme}`
   const newLineReadmeEncoded = Buffer.from(newLineReadme).toString('base64')
 
   // create new release-branch
-  console.log(`try to create branch "bump-${bumpTo}"`)
-  await o.createBranch({
+  const branchName = `bump-to-next-minor-version-${Date.now()}`
+  console.log(`try to create branch "${branchName}"`)
+  const branch = await gitCreateBranch({
     owner,
     repo,
-    ref: `refs/heads/bump-${bumpTo}`,
+    token,
+    ref: `refs/heads/${branchName}`,
     sha: baseTagCommit.sha
   })
 
   // add a new commit to the release-branch
-  await o.updateReadme({
+  const updatedContent = await updateContent({
     owner,
     repo,
-    path: readmeBase64.data.path,
-    message: `feat(release-management): Bump minor version to ${bumpTo} for release management`,
+    token,
+    path: readmeBase64Obj.path,
+    message: `feat(release-management): Bump minor version for release management`,
     content: newLineReadmeEncoded,
-    sha: readmeBase64.data.sha,
-    branch: `bump-${bumpTo}`
+    sha: readmeBase64Obj.sha,
+    branch: branchName
   })
 
   // create the bump pull request
-  const pullRequest = await o.createPullRequest({
+  const pullRequest = await createPullRequest({
     owner,
     repo,
-    title: `Bump minor version to ${bumpTo} for release management`,
-    head: `bump-${bumpTo}`,
+    token,
+    title: `Bump minor version for release management`,
+    head: branchName,
     base: 'master',
-    body: `## Description
-      Bump minor version to ${bumpTo} for release management`
+    body: `## Motivation
+
+Bump minor version for release management
+    `
   })
 
-  // response format https://developer.github.com/v3/pulls/#create-a-pull-request
+  // auto approval for pull request
+  if (ghApprovalToken) {
+    await createApprovalForPullRequest({
+      owner,
+      repo,
+      token: ghApprovalToken,
+      pull_number: pullRequest.number,
+      commit_id: updatedContent.commit.sha
+    })
+  }
+
   return pullRequest
 }
