@@ -5,6 +5,11 @@ const argv = require('yargs')
     description: 'gh token to auto approve the opened pull request',
     type: 'string'
   })
+  .option('file', {
+    description: 'append an empty space space to this file (one needs a file diff to create a bump PR)',
+    type: 'string',
+    default: 'README.md'
+  })
   .help(false)
   .version(false)
   .argv

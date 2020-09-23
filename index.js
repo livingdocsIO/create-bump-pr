@@ -1,7 +1,7 @@
 const _ = require('lodash')
 const semver = require('semver')
 const gitGetTags = require('./lib/git/get_tags')
-const gitGetReadme = require('./lib/git/get_readme')
+const gitGetContent = require('./lib/git/get_content')
 const gitCreateBranch = require('./lib/git/create_branch')
 const updateContent = require('./lib/git/update_content')
 const createPullRequest = require('./lib/git/create_pull_request')
@@ -28,14 +28,15 @@ const getHighestTag = async ({repo, owner, token}) => {
 }
 
 // main application
-module.exports = async ({owner, repo, ghToken, ghApprovalToken}) => {
+module.exports = async ({owner, repo, ghToken, ghApprovalToken, file}) => {
   const token = ghToken
 
   if (token === ghApprovalToken) throw new Error('gh-approval-token token must be different to the gh-token')
   const baseTagCommit = await getHighestTag({repo, owner, token})
 
   // get README.md
-  const readmeBase64Obj = await gitGetReadme({owner, repo, token})
+  const readmeBase64Obj = await gitGetContent({owner, repo, token, path: file})
+  console.log('readmeBase64Obj', readmeBase64Obj)
 
   // add an empty line to the readme to have a code diff for the upcoming pull request
   const readme = Buffer.from(readmeBase64Obj.content, 'base64').toString('ascii')
