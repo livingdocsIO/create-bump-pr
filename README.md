@@ -19,6 +19,7 @@ npx @daraff/create-bump-pr \
   --gh-token=<your-gh-token>
 ```
 
+
 **Arguments**
 - `--owner` - Github owner of the repo where you want to create the Pull Request
 - `--repo` - Github repo where you want to create the Pull Request
