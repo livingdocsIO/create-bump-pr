@@ -18,3 +18,9 @@ npx @daraff/create-bump-pr \
   --repo=<gh-repo> \
   --gh-token=<your-gh-token>
 ```
+
+**Arguments**
+- `--owner` - Github owner of the repo where you want to create the Pull Request
+- `--repo` - Github repo where you want to create the Pull Request
+- `--gh-token` - Github token of a user to create the PR with
+- `--target-branch` - default: `master`, but you can overwrite it
