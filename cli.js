@@ -10,6 +10,11 @@ const argv = require('yargs')
     type: 'string',
     default: 'README.md'
   })
+  .option('target-branch', {
+    description: 'create a bump PR onto this branch',
+    type: 'string',
+    default: 'master'
+  })
   .help(false)
   .version(false)
   .argv

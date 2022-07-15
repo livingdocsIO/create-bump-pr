@@ -28,7 +28,7 @@ const getHighestTag = async ({repo, owner, token}) => {
 }
 
 // main application
-module.exports = async ({owner, repo, ghToken, ghApprovalToken, file}) => {
+module.exports = async ({owner, repo, ghToken, ghApprovalToken, file, targetBranch}) => {
   const token = ghToken
 
   if (token === ghApprovalToken) throw new Error('gh-approval-token token must be different to the gh-token')
@@ -73,7 +73,7 @@ module.exports = async ({owner, repo, ghToken, ghApprovalToken, file}) => {
     token,
     title: `Bump minor version for release management`,
     head: branchName,
-    base: 'master',
+    base: targetBranch,
     body: `## Motivation
 
 Bump minor version for release management
