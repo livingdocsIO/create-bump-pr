@@ -1,5 +1,5 @@
 {
-  "name": "@daraff/create-bump-pr",
+  "name": "@livingdocs/create-bump-pr",
   "version": "0.0.0-development",
   "description": "",
   "main": "index.js",
@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DaRaFF/create-bump-pr.git"
+    "url": "git+https://github.com/livingdocsIO/create-bump-pr.git"
   },
   "devDependencies": {
     "semantic-release": "^15.12.0",
@@ -29,7 +29,7 @@
     "access": "public"
   },
   "bugs": {
-    "url": "https://github.com/DaRaFF/create-bump-pr/issues"
+    "url": "https://github.com/livingdocsIO/create-bump-pr/issues"
   },
-  "homepage": "https://github.com/DaRaFF/create-bump-pr#readme"
+  "homepage": "https://github.com/livingdocsIO/create-bump-pr#readme"
 }
