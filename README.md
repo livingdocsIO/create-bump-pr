@@ -13,7 +13,7 @@ A simple CLI command to create a semantic-release minor bump pull request.
 ### via CLI
 
 ```bash
-npx github:livingdocsIO/create-bump-pr@latest \
+npx github:livingdocsIO/create-bump-pr \
   --owner=<gh-owner> \
   --repo=<gh-repo> \
   --gh-token=<your-gh-token>
