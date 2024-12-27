@@ -14,7 +14,7 @@ const argv = require('yargs')
   .option('target-branch', {
     description: 'create a bump PR onto this branch',
     type: 'string',
-    default: 'master'
+    default: 'main'
   })
   .option('postfix', {
     description: 'postfix name of the PR branch - `bump-to-next-minor-version-<postfix>`',
