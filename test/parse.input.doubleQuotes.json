@@ -1,0 +1,18 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["github>livingdocsIO/customer-solutions:renovate-msp-default.json5"],
+  "ignoreDeps": [],
+  "baseBranches": ["main", "release-2025-01-16"],
+  "packageRules": [
+    {
+      "matchPackageNames": ["@livingdocs/server", "@livingdocs/editor"],
+      "matchBaseBranches": ["/^release-20[0-9]{2}-[0-9]{2}-[0-9]{2}$/"],
+      "followTag": "release-2024-09"
+    },
+    {
+      "matchPackageNames": ["@livingdocs/server", "@livingdocs/editor"],
+      "matchBaseBranches": ["main"],
+      "followTag": "release-2024-09"
+    }
+  ]
+}

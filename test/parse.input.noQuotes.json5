@@ -1,0 +1,23 @@
+{
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: ['local>livingdocsIO/customer-solutions:renovate-msp-default.json5'],
+  ignoreDeps: [],
+  // check these branches for dependency updates
+  baseBranches: ['main'],
+  // packageRules are taken from default.json and are extended with the rules below (the rules below are appended to the default rules)
+  //   --> the last matching rule always win!
+  packageRules: [
+    {
+      matchPackageNames: ['@livingdocs/server', '@livingdocs/editor'],
+      // matchBaseBranches = downstream branch
+      matchBaseBranches: ['/^release-20[0-9]{2}-[0-9]{2}-[0-9]{2}$/'],
+      // followTag = upstream branch
+      followTag: 'release-2025-01'
+    },
+    {
+      matchPackageNames: ['@livingdocs/server', '@livingdocs/editor'],
+      matchBaseBranches: ['main'],
+      followTag: 'release-2025-01'
+    }
+  ]
+}
